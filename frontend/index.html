@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Asset Management Tool</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .tab { border: 2px solid hwb(191 43% 6%); padding: 10px; margin: 10px; display: inline-block; vertical-align: top; }
+    .tab.red { border-color: lab(18.38% -25.72 21.02); }
+    .tab.green { border-color: #dc1974; }
+    input { display: block; margin-bottom: 10px; width: 200px; }
+    button { margin: 10px 5px; }
+  </style>
+</head>
+<body>
+  <h2>Asset Management Tool</h2>
+
+  <div class="tab red">
+    <label>Username <input id="username"></label>
+    <label>Location <input id="location"></label>
+    <label>PERN No <input id="pernNo"></label>
+    <label>Dept <input id="dept"></label>
+    <label>Others <input id="others"></label>
+    <label>Printer <input id="printer"></label>
+  </div>
+
+  <div class="tab green">
+    <label>Asset Make <input id="make"></label>
+    <label>Model <input id="model"></label>
+    <label>Asset Type <input id="type"></label>
+    <label>Asset PO <input id="po"></label>
+    <label>Asset Period <input id="period"></label>
+    <label>Vendor Detail <input id="vendor"></label>
+  </div>
+
+  <div class="tab">
+    <label>Serial No <input id="serial"></label>
+    <label>Asset <input id="asset"></label>
+    <label>Software <input id="software"></label>
+    <label>OS <input id="os"></label>
+    <label>MS Office <input id="msOffice"></label>
+    <label>Ext No <input id="ext"></label>
+    <label>Mobile <input id="mobile"></label>
+  </div>
+
+  <br>
+  <button id="saveBtn">Save</button>
+  <button id="viewBtn">View All</button>
+
+
+  <pre id="output"></pre>
+
+  <script>
+    function submitForm() {
+      const data = {
+        username: document.getElementById('username').value,
+        location: document.getElementById('location').value,
+        pernNo: document.getElementById('pernNo').value,
+        dept: document.getElementById('dept').value,
+        others: document.getElementById('others').value,
+        printer: document.getElementById('printer').value,
+        make: document.getElementById('make').value,
+        model: document.getElementById('model').value,
+        type: document.getElementById('type').value,
+        po: document.getElementById('po').value,
+        period: document.getElementById('period').value,
+        vendor: document.getElementById('vendor').value,
+        serial: document.getElementById('serial').value,
+        asset: document.getElementById('asset').value,
+        software: document.getElementById('software').value,
+        os: document.getElementById('os').value,
+        msOffice: document.getElementById('msOffice').value,
+        ext: document.getElementById('ext').value,
+        mobile: document.getElementById('mobile').value
+      };
+
+      fetch('http://localhost:3000/assets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(result => alert(result.message));
+    }
+
+    function loadAssets() {
+      fetch('http://localhost:3000/assets')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        });
+    }
+  </script>
+  <script>
+function collectFormData() {
+    const data = {};
+    document.querySelectorAll("input").forEach(input => {
+        const key = input.id || "Unknown";
+        data[key] = input.value;
+    });
+    return data;
+} 
+
+
+
+document.getElementById("saveBtn").addEventListener("click", () => {
+    const data = collectFormData();
+    fetch("http://localhost:3000/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(response => alert(response.message))
+    .catch(() => alert("Error saving data"));
+});
+
+document.getElementById("viewBtn").addEventListener("click", () => {
+    fetch("http://localhost:3000/view")
+        .then(res => res.json())
+        .then(data => alert(JSON.stringify(data, null, 2)))
+        .catch(() => alert("Error fetching data"));
+});
+</script>
+<script>
+function collectFormData() {
+    const data = {};
+    document.querySelectorAll("input").forEach(input => {
+        const key = input.id || "Unknown";
+        data[key] = input.value;
+    });
+    return data;
+}
+
+
+
+document.getElementById("saveBtn").addEventListener("click", () => {
+    const data = collectFormData();
+    fetch("http://localhost:3000/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(response => alert(response.message))
+    .catch(() => alert("Error saving data"));
+});
+
+document.getElementById("viewBtn").addEventListener("click", () => {
+    fetch("http://localhost:3000/view")
+        .then(res => res.json())
+        .then(data => alert("All Records:\n" + JSON.stringify(data, null, 2)))
+        .catch(() => alert("Error fetching data"));
+});
+</script>
+
+</body>
+</html> 
